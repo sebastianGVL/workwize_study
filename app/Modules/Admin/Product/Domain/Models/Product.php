@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * @property-read int $id
  * @property string $name
+ * @property string $product_number
  * @property string $description
  * @property int $price
  * @property int $stock
@@ -27,6 +28,7 @@ class Product extends Model
 
     protected $fillable = [
         'name',
+        'product_number',
         'description',
         'price',
         'stock',
@@ -36,7 +38,7 @@ class Product extends Model
     /**
      * @return BelongsTo<User>
      */
-    public function  user(): BelongsTo
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
@@ -52,8 +54,8 @@ class Product extends Model
     protected function price(): Attribute
     {
         return Attribute::make(
-            get: fn (string $value) => $value / 100,
-            set: fn (string $value) => $value * 100,
+            get: fn(string $value) => $value / 100,
+            set: fn(string $value) => $value * 100,
         );
     }
 }

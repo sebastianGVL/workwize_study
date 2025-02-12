@@ -14,9 +14,10 @@ class ProductFactory extends Factory
     {
         return [
             'name' => fake()->name(),
+            'product_number' => 'DGP_' . now()->format('isLhhmmdd'),
             'description' => fake()->paragraph(2),
-            'stock' => fake()->numberBetween(1,500),
-            'price' => fake()->numberBetween(100,5000), //between 1 eur and 50 eurs.
+            'stock' => fake()->numberBetween(1, 500),
+            'price' => fake()->numberBetween(100, 5000), //between 1 eur and 50 eurs.
             'user_id' => User::factory(),
         ];
     }

@@ -7,13 +7,19 @@ namespace App\Modules\Admin\Product\Application\Services;
 use App\Modules\Admin\Product\Application\Data\StoreData;
 use App\Modules\Admin\Product\Domain\Models\Product;
 use App\Modules\Admin\Product\Domain\Services\AbstractStoreService;
-use App\Modules\Admin\User\Domain\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
 class StoreService extends AbstractStoreService
 {
+    public static function generateProductNumber(): string
+    {
+        $prefix = 'DGP_';
+
+        return $prefix.now()->format('isLhhmmdd');
+    }
+
     protected function validate(StoreData $data): void
     {
         if (Auth::id() !== $data->userId) {
@@ -28,6 +34,7 @@ class StoreService extends AbstractStoreService
 
         $product->name = $data->name;
         $product->description = $data->description;
+        $product->product_number = self::generateProductNumber();
         $product->price = $data->price;
         $product->stock = $data->stock;
         $product->user_id = $data->userId;
