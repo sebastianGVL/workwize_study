@@ -47,4 +47,5 @@ Structure:
 
 Tech Stack:
 - Laravel 11   
-- PHP 8.4 or PHP 8.3    
+- PHP 8.4 or PHP 8.3
+- MariaDB 11  
