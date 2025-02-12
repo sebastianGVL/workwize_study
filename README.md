@@ -45,4 +45,6 @@ Structure:
 ----Interface (GraphQL, Http, etc)  
 ----Providers (Not a DDD concept since it does a couple of stuff)  
 
-
+Tech Stack:
+- Laravel 11   
+- PHP 8.4 or PHP 8.3    
