@@ -18,7 +18,7 @@ use Laravel\Sanctum\HasApiTokens;
  */
 class User extends Authenticatable
 {
-    /** @use HasFactory<\App\Modules\Admin\User\Infrastructure\Persistence\Factories\UserFactory> */
+    /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable, HasApiTokens;
 
     /**
@@ -56,7 +56,7 @@ class User extends Authenticatable
     }
 
     /**
-     * @return \App\Modules\Admin\User\Infrastructure\Persistence\Factories\UserFactory
+     * @return UserFactory
      */
     protected static function newFactory()
     {
