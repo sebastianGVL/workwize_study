@@ -7,14 +7,15 @@ use App\Modules\Storefront\Cart\Domain\CartItem;
 use App\Modules\Storefront\Cart\Domain\Services\CartUpdateProcessorInterface;
 use App\Modules\Storefront\Customer\Domain\Models\Customer;
 use App\Modules\Storefront\Product\Domain\Product;
+use Illuminate\Support\Facades\Auth;
 
 class CartUpdateProcessor extends AbstractBaseCartProcessor implements CartUpdateProcessorInterface
 {
-    public function update(string $productNumber, int $quantity): Cart
+    public function update(int $productId, int $quantity): Cart
     {
-        $product = $this->fetchProduct($productNumber);
-        $cart = Customer::getCart();
-        $item = $cart->items()->where('product_number', $productNumber)->first();
+        $product = $this->fetchProduct($productId);
+        $cart = Customer::getCart(Auth::id());
+        $item = $cart->items()->where('product_id', $productId)->first();
 
         if ($item === null) {
             return $cart;
@@ -29,11 +30,23 @@ class CartUpdateProcessor extends AbstractBaseCartProcessor implements CartUpdat
             return $cart;
         }
 
+        if (($item->quantity - $quantity) >= $product->stock) {
+            $item->update(
+                [
+                    'quantity' => $product->stock,
+                    'price' => $product->price,
+                    'total_price' => $product->price * $product->stock,
+                ]
+            );
+
+            return $cart;
+        }
+
         $item->update(
             [
-                'quantity' => $quantity,
+                'quantity' => $item->quantity - $quantity,
                 'price' => $product->price,
-                'total_price' => $product->price * $quantity,
+                'total_price' => $product->price * ($item->quantity - $quantity),
             ]
         );
 

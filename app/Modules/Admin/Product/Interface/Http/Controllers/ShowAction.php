@@ -29,6 +29,7 @@ class ShowAction extends AbstractShowAction
                     'product' => [
                         'id' => $product->id,
                         'name' => $product->name,
+                        'product_number' => $product->product_number,
                         'price' => $product->price,
                         'description' => $product->description,
                         'stock' => $product->stock,

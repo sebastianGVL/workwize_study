@@ -6,5 +6,5 @@ use App\Modules\Storefront\Cart\Domain\Cart;
 
 interface CartUpdateProcessorInterface
 {
-    public function update(string $productNumber, int $quantity): Cart;
+    public function update(int $productId, int $quantity): Cart;
 }

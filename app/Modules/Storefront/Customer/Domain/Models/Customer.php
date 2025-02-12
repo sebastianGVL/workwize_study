@@ -6,8 +6,11 @@ use App\Modules\Storefront\Cart\Domain\Cart;
 use App\Modules\Storefront\Cart\Domain\CartItem;
 use App\Modules\Storefront\Customer\Application\Observers\CustomerObserver;
 use App\Modules\Storefront\Customer\Infrastructure\Persistence\Factories\CustomerFactory;
+use App\Modules\Storefront\Order\Domain\Models\Order;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\Auth;
@@ -22,6 +25,7 @@ use Illuminate\Notifications\Notifiable;
  * @property string $email
  * @property string $password
  * @property Cart $cart
+ * @property Collection<Order> $orders
  */
 #[ObservedBy([CustomerObserver::class])]
 class Customer extends Authenticatable
@@ -58,6 +62,11 @@ class Customer extends Authenticatable
         return $this->hasOne(Cart::class)->where('type', Cart::TYPE_CART);
     }
 
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
+    }
+
     /**
      * @return HasManyThrough<CartItem>
      */
@@ -67,12 +76,12 @@ class Customer extends Authenticatable
             ->where('type', Cart::TYPE_CART);
     }
 
-    public static function getCart(): Cart
+    public static function getCart(int $customerId = null): Cart
     {
         /** @var self $customer */
         $customer = self::query()
             ->with(['cart.items'])
-            ->where('id', Auth::guard('customer')->id())
+            ->where('id', $customerId !== null ? $customerId : Auth::guard('customer')->id())
             ->first();
 
         if ($customer == null) {
@@ -81,7 +90,7 @@ class Customer extends Authenticatable
 
         assert($customer instanceof self);
         assert($customer->cart instanceof Cart);
-
+    
         return $customer->cart;
     }
 }

@@ -5,6 +5,7 @@ use App\Modules\Admin\User\Providers\UserServiceProvider;
 use App\Modules\Common\Providers\AppServiceProvider;
 use App\Modules\Storefront\Cart\Providers\CartServiceProvider as StorefrontCartServiceProviderAlias;
 use App\Modules\Storefront\Customer\Providers\CustomerServiceProvider as StorefrontCustomerServiceProvider;
+use App\Modules\Storefront\Order\Providers\OrderServiceProvider as StorefrontOrderServiceProviderAlias;
 use App\Modules\Storefront\Product\Providers\ProductServiceProvider as StorefrontProductServiceProvider;
 
 return [
@@ -15,4 +16,5 @@ return [
     StorefrontCustomerServiceProvider::class,
     StorefrontProductServiceProvider::class,
     StorefrontCartServiceProviderAlias::class,
+    StorefrontOrderServiceProviderAlias::class,
 ];

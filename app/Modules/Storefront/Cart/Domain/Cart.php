@@ -51,7 +51,7 @@ class Cart extends Model
 
         if ($target === 'subtotal') {
             foreach ($this->items as $item) {
-                $itemPrice = $item->final_price * $item->quantity;
+                $itemPrice = $item->price * $item->quantity;
                 $total += $itemPrice;
             }
         }

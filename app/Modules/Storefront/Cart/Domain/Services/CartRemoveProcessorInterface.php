@@ -6,5 +6,5 @@ use App\Modules\Storefront\Cart\Domain\Cart;
 
 interface CartRemoveProcessorInterface
 {
-    public function remove(string $productNumber): Cart;
+    public function remove(int $productId): Cart;
 }

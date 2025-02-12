@@ -33,6 +33,7 @@ class AuthController extends AbstractAuthController
             data: BaseApiResponseData::make(
                 [
                     'user' => [
+                        'id' => $user->id,
                         'name' => $user->name,
                         'email' => $user->email,
                         'token' => $user->createToken('token_' . $user->email, ['admin'])->plainTextToken,
@@ -60,6 +61,7 @@ class AuthController extends AbstractAuthController
             data: BaseApiResponseData::make(
                 [
                     'user' => [
+                        'id' => $user->id,
                         'name' => $user->name,
                         'email' => $user->email,
                         'token' => $user->createToken('token_' . $user->email, ['admin'])->plainTextToken,

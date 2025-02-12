@@ -11,8 +11,8 @@ Route::group(['prefix' => 'api/v1/storefront', 'as' => 'api.v1.storefront.'], st
         Route::post('/login', [AbstractAuthController::class, 'login'])->name('login');
         Route::post('/register', [AbstractAuthController::class, 'register'])->name('register');
 
-        Route::middleware([EnsureCustomerToken::class, 'auth:sanctum','auth:customer', 'ability:customer'])->group(static function () {
-            Route::post('/logout', [AbstractAuthController::class, 'logout'])->name('logout');
+        Route::middleware(['auth:sanctum', 'ability:customer'])->group(static function () {
+            Route::post('{customerId}/logout', [AbstractAuthController::class, 'logout'])->name('logout');
         });
     });
 });

@@ -7,6 +7,7 @@ use App\Modules\Admin\Product\Application\Services\ShowService;
 use App\Modules\Admin\Product\Application\Services\StoreService;
 use App\Modules\Admin\Product\Application\Services\UpdateService;
 use App\Modules\Admin\Product\Domain\Http\Controllers\AbstractDeleteAction;
+use App\Modules\Admin\Product\Domain\Http\Controllers\AbstractIndexAction;
 use App\Modules\Admin\Product\Domain\Http\Controllers\AbstractShowAction;
 use App\Modules\Admin\Product\Domain\Http\Controllers\AbstractStoreAction;
 use App\Modules\Admin\Product\Domain\Http\Controllers\AbstractUpdateAction;
@@ -17,6 +18,7 @@ use App\Modules\Admin\Product\Domain\Services\AbstractStoreService;
 use App\Modules\Admin\Product\Domain\Services\AbstractUpdateService;
 use App\Modules\Admin\Product\Domain\Services\ShowServiceInterface;
 use App\Modules\Admin\Product\Interface\Http\Controllers\DeleteAction;
+use App\Modules\Admin\Product\Interface\Http\Controllers\IndexAction;
 use App\Modules\Admin\Product\Interface\Http\Controllers\ShowAction;
 use App\Modules\Admin\Product\Interface\Http\Controllers\StoreAction;
 use App\Modules\Admin\Product\Interface\Http\Controllers\UpdateAction;
@@ -36,6 +38,7 @@ class ProductServiceProvider extends ServiceProvider
         $this->app->bind(AbstractStoreAction::class, StoreAction::class);
         $this->app->bind(AbstractUpdateAction::class, UpdateAction::class);
         $this->app->bind(AbstractDeleteAction::class, DeleteAction::class);
+        $this->app->bind(AbstractIndexAction::class, IndexAction::class);
 
         //Application
         $this->app->bind(AbstractStoreService::class, StoreService::class);

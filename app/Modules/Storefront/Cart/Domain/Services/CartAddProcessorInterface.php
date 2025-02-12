@@ -6,5 +6,5 @@ use App\Modules\Storefront\Cart\Domain\Cart;
 
 interface CartAddProcessorInterface
 {
-    public function add(string $productNumber, int $quantity): Cart;
+    public function add(int $productId, int $quantity): Cart;
 }

@@ -8,10 +8,16 @@ use App\Modules\Storefront\Cart\Application\Services\CartAddProcessor;
 use App\Modules\Storefront\Cart\Application\Services\CartRemoveProcessor;
 use App\Modules\Storefront\Cart\Application\Services\CartUpdateProcessor;
 use App\Modules\Storefront\Cart\Domain\Http\Controllers\AbstractCartController;
+use App\Modules\Storefront\Cart\Domain\Http\Requests\AbstractAddRequest;
+use App\Modules\Storefront\Cart\Domain\Http\Requests\AbstractRemoveRequest;
+use App\Modules\Storefront\Cart\Domain\Http\Requests\AbstractUpdateRequest;
 use App\Modules\Storefront\Cart\Domain\Services\CartAddProcessorInterface;
 use App\Modules\Storefront\Cart\Domain\Services\CartRemoveProcessorInterface;
 use App\Modules\Storefront\Cart\Domain\Services\CartUpdateProcessorInterface;
 use App\Modules\Storefront\Cart\Interface\Http\Controllers\CartController;
+use App\Modules\Storefront\Cart\Interface\Http\Requests\AddRequest;
+use App\Modules\Storefront\Cart\Interface\Http\Requests\RemoveRequest;
+use App\Modules\Storefront\Cart\Interface\Http\Requests\UpdateRequest;
 use Illuminate\Support\ServiceProvider;
 
 class CartServiceProvider extends ServiceProvider
@@ -28,6 +34,9 @@ class CartServiceProvider extends ServiceProvider
 
         // Interface
         $this->app->bind(AbstractCartController::class, CartController::class);
+        $this->app->bind(AbstractAddRequest::class, AddRequest::class);
+        $this->app->bind(AbstractRemoveRequest::class, RemoveRequest::class);
+        $this->app->bind(AbstractUpdateRequest::class, UpdateRequest::class);
     }
 
     public function boot(): void

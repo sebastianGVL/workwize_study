@@ -9,9 +9,9 @@ use Illuminate\Validation\ValidationException;
 
 abstract class AbstractBaseCartProcessor
 {
-    protected function fetchProductAndValidateStock(string $productNumber): Product
+    protected function fetchProductAndValidateStock(int $productId): Product
     {
-        $product = $this->fetchProduct($productNumber);
+        $product = $this->fetchProduct($productId);
 
         if ($product->stock === 0) {
             throw ValidationException::withMessages(['quantity' => 'not_in_stock']);
@@ -39,11 +39,9 @@ abstract class AbstractBaseCartProcessor
         return $quantity;
     }
 
-    protected function fetchProduct(string $productNumber): Product
+    protected function fetchProduct(int $productId): Product
     {
-        $product = Product::query()
-            ->where('product_number', $productNumber)
-            ->first();
+        $product = Product::query()->find($productId);
 
         if ($product === null) {
             throw ValidationException::withMessages(['cart' => 'product_not_found']);

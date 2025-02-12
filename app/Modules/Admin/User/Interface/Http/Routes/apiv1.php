@@ -1,6 +1,7 @@
 <?php
 
 use App\Modules\Admin\User\Domain\Http\Controllers\AbstractAuthController;
+use App\Modules\Admin\User\Domain\Http\Controllers\AbstractUserCustomerController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -15,8 +16,8 @@ Route::group(['prefix' => 'api/v1/admin', 'as' => 'api.v1.admin.'], static funct
         });
     });
 
-    Route::group(['middleware' => ['auth:sanctum', 'ability:admin'], 'prefix' => 'account', 'as' => 'account.'], static function () {
-//        Route::get('/user', [AccountController::class, 'show'])->name('user');
+    Route::group(['middleware' => ['auth:sanctum', 'ability:admin'], 'prefix' => 'users/{userId}/customers', 'as' => 'users.customers.'], static function () {
+        Route::get('', [AbstractUserCustomerController::class, 'index'])->name('index');
     });
 });
 

@@ -13,5 +13,5 @@ abstract class AbstractAuthController extends Controller
 
     abstract  public function register(AbstractRegisterRequest $request): JsonResponse;
 
-    abstract  public function logout(): JsonResponse;
+    abstract  public function logout(int $customerId): JsonResponse;
 }

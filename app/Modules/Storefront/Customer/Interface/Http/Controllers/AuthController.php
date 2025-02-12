@@ -12,6 +12,7 @@ use App\Modules\Storefront\Customer\Domain\Models\Customer;
 use App\Modules\Storefront\Customer\Domain\Services\AuthServiceInterface;
 use App\Modules\Storefront\Customer\Domain\Services\RegistrationServiceInterface;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class AuthController extends AbstractAuthController
@@ -31,6 +32,7 @@ class AuthController extends AbstractAuthController
             data: BaseApiResponseData::make(
                 [
                     'customer' => [
+                        'id' => $customer->id,
                         'name' => $customer->name,
                         'email' => $customer->email,
                         'token' => $customer->createToken('token_' . $customer->email, ['customer'])->plainTextToken,
@@ -57,7 +59,8 @@ class AuthController extends AbstractAuthController
         return response()->json(
             data: BaseApiResponseData::make(
                 [
-                    'user' => [
+                    'customer' => [
+                        'id' => $customer->id,
                         'name' => $customer->name,
                         'email' => $customer->email,
                         'token' => $customer->createToken('token_' . $customer->email, ['customer'])->plainTextToken,
@@ -69,8 +72,15 @@ class AuthController extends AbstractAuthController
         );
     }
 
-    public function logout(): JsonResponse
+    public function logout(int $customerId): JsonResponse
     {
+        if ($customerId !== Auth::id()){
+            return response()->json(
+                data: BaseApiResponseData::make(null, 'Unauthenticated.'),
+                status:Response::HTTP_UNAUTHORIZED
+            );
+        }
+
         $this->authService->logout();
 
         return response()->json(

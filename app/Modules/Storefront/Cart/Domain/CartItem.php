@@ -8,7 +8,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * @property-read int $id
  * @property int $cart_id
+ * @property int $product_id
  * @property string $product_name
+ * @property string $product_number
  * @property string $product_description
  * @property int $price
  * @property int $total_price
@@ -20,6 +22,8 @@ class CartItem extends Model
     protected $fillable = [
         'cart_id',
         'product_name',
+        'product_id',
+        'product_number',
         'product_description',
         'price',
         'total_price',

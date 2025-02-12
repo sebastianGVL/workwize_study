@@ -30,8 +30,8 @@ class AuthService implements AuthServiceInterface
 
     public function logout(): void
     {
-        $user = Auth::guard('customer')->user();
+        $customer = Auth::user();
 
-        $user?->tokens()?->delete();
+        $customer?->tokens()?->delete();
     }
 }

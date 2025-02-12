@@ -4,44 +4,52 @@ namespace App\Modules\Storefront\Cart\Interface\Http\Controllers;
 
 use App\Modules\Common\Interface\Http\Data\BaseApiResponseData;
 use App\Modules\Storefront\Cart\Domain\Http\Controllers\AbstractCartController;
+use App\Modules\Storefront\Cart\Domain\Http\Requests\AbstractAddRequest;
+use App\Modules\Storefront\Cart\Domain\Http\Requests\AbstractRemoveRequest;
+use App\Modules\Storefront\Cart\Domain\Http\Requests\AbstractUpdateRequest;
 use App\Modules\Storefront\Cart\Domain\Services\CartAddProcessorInterface;
 use App\Modules\Storefront\Cart\Domain\Services\CartRemoveProcessorInterface;
 use App\Modules\Storefront\Cart\Domain\Services\CartUpdateProcessorInterface;
 use App\Modules\Storefront\Customer\Domain\Models\Customer;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
 
 class CartController extends AbstractCartController
 {
-    public function add(Request $request,int $customerId, CartAddProcessorInterface $processor): JsonResponse
+    public function add(AbstractAddRequest $request,int $customerId, CartAddProcessorInterface $processor): JsonResponse
     {
-        if ($customerId !== Auth::guard('customer')->id()){
+        if ($customerId !== Auth::id()){
             return response()->json(
                 data: BaseApiResponseData::make(null, 'Unauthenticated.'),
                 status:Response::HTTP_UNAUTHORIZED
             );
         }
 
+        $errors = [];
+
         try {
-            $cart = $processor->add(
-                $request->input('productNumber'),
+            $processor->add(
+                $request->input('productId'),
                 $request->input('quantity') ?: 1
             );
 
+        } catch (ValidationException $exception) {
+            $errors[] = $exception->getMessage();
         } catch (\Throwable $e) {
             Log::error(
                 'CartController::add failed: ' . $e->getMessage(),
-                ['product' => $request->toArray(), 'customerId' => Auth::guard('customer')->id()]
+                ['product' => $request->toArray(), 'customerId' => Auth::id()]
             );
-
-            $cart = Customer::getCart();
         }
+
+        $cart = Customer::getCart(Auth::id());
 
         $cart->refresh();
         $subtotal = $cart->getTotal('subtotal');
+
         return response()->json(
             data: BaseApiResponseData::make(
                 [
@@ -49,33 +57,36 @@ class CartController extends AbstractCartController
                         'items' => $cart->items,
                         'subtotal' => $subtotal,
                         'total' => $cart->getTotal('total', $subtotal),
-                    ]
+                    ],
+                    'errors' => $errors,
                 ],
                 'success'
             )
         );
     }
 
-    public function remove(Request $request,int $customerId, CartRemoveProcessorInterface $processor): JsonResponse
+    public function remove(AbstractRemoveRequest $request,int $customerId, CartRemoveProcessorInterface $processor): JsonResponse
     {
-        if ($customerId !== Auth::guard('customer')->id()){
+        if ($customerId !== Auth::id()){
             return response()->json(
                 data: BaseApiResponseData::make(null, 'Unauthenticated.'),
                 status:Response::HTTP_UNAUTHORIZED
             );
         }
 
+        $errors = [];
+
         try {
-            $cart = $processor->remove($request->input('productNumber'));
+            $cart = $processor->remove($request->input('productId'));
         } catch (\Throwable $e) {
             Log::error(
                 'CartController::remove failed: ' . $e->getMessage(),
-                ['product' => $request->toArray(), 'customerId' => Auth::guard('customer')->id()]
+                ['product' => $request->toArray(), 'customerId' => Auth::id()]
             );
 
-            $cart = Customer::getCart();
+            $errors[] = $e->getMessage();
+            $cart = Customer::getCart(Auth::id());
         }
-
 
         $cart->refresh();
         $subtotal = $cart->getTotal('subtotal');
@@ -87,16 +98,17 @@ class CartController extends AbstractCartController
                         'items' => $cart->items,
                         'subtotal' => $subtotal,
                         'total' => $cart->getTotal('total', $subtotal),
-                    ]
+                    ],
+                    'errors' => $errors,
                 ],
                 'success'
             )
         );
     }
 
-    public function update(Request $request,int $customerId, CartUpdateProcessorInterface $processor): JsonResponse
+    public function update(AbstractUpdateRequest $request,int $customerId, CartUpdateProcessorInterface $processor): JsonResponse
     {
-        if ($customerId !== Auth::guard('customer')->id()){
+        if ($customerId !== Auth::id()){
             return response()->json(
                 data: BaseApiResponseData::make(null, 'Unauthenticated.'),
                 status:Response::HTTP_UNAUTHORIZED
@@ -105,16 +117,17 @@ class CartController extends AbstractCartController
 
         try {
             $cart = $processor->update(
-                $request->input('productNumber'),
-                $request->input('quantity') ?: 1
+                $request->input('productId'),
+                $request->input('quantity') !== null ? $request->input('quantity') : 1
             );
         } catch (\Throwable $e) {
+            dd($e->getMessage());
             Log::error(
                 'CartController::decrementQuantity failed: ' . $e->getMessage(),
-                ['product' => $request->toArray(), 'customerId' => Auth::guard('customer')->id()]
+                ['product' => $request->toArray(), 'customerId' => Auth::id()]
             );
 
-            $cart = Customer::getCart();
+            $cart = Customer::getCart(Auth::id());
         }
 
         $cart->refresh();
@@ -136,14 +149,14 @@ class CartController extends AbstractCartController
 
     public function show(int $customerId): JsonResponse
     {
-        if ($customerId !== Auth::guard('customer')->id()){
+        if ($customerId !== Auth::id()){
             return response()->json(
                 data: BaseApiResponseData::make(null, 'Unauthenticated.'),
                 status:Response::HTTP_UNAUTHORIZED
             );
         }
 
-        $cart = Customer::getCart();
+        $cart = Customer::getCart(Auth::id());
         $subtotal = $cart->getTotal('subtotal');
 
         return response()->json(

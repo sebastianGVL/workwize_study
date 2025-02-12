@@ -10,6 +10,7 @@ use App\Modules\Admin\Product\Domain\Http\Requests\AbstractStoreRequest;
 use App\Modules\Admin\Product\Domain\Services\AbstractStoreService;
 use App\Modules\Common\Interface\Http\Data\BaseApiResponseData;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
