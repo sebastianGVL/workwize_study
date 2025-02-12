@@ -28,7 +28,20 @@ class UserServiceProvider extends ServiceProvider
         //Application
         $this->app->bind(AuthServiceInterface::class, AuthService::class);
         $this->app->bind(RegistrationServiceInterface::class, RegistrationService::class);
+    }
 
+    public function boot(): void
+    {
         $this->loadMigrationsFrom(__DIR__ . '/../Infrastructure/Persistence/Migrations');
+
+        if(file_exists($this->getRoutePath()))
+        {
+            $this->loadRoutesFrom($this->getRoutePath());
+        }
+    }
+
+    private function getRoutePath(string $filename = 'apiv1.php'): string
+    {
+        return __DIR__ . "/../Interface/Http/Routes/$filename";
     }
 }
