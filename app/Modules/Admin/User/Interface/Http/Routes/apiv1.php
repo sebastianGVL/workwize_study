@@ -10,12 +10,12 @@ Route::group(['prefix' => 'api/v1/admin', 'as' => 'api.v1.admin.'], static funct
         Route::post('/login', [AbstractAuthController::class, 'login'])->name('login');
         Route::post('/register', [AbstractAuthController::class, 'register'])->name('register');
 
-        Route::group(['middleware' => ['auth:sanctum']], static function () {
+        Route::group(['middleware' => ['auth:sanctum', 'ability:admin']], static function () {
             Route::post('/logout', [AbstractAuthController::class, 'logout'])->name('logout');
         });
     });
 
-    Route::group(['middleware' => ['auth:sanctum'], 'prefix' => 'account', 'as' => 'account.'], static function () {
+    Route::group(['middleware' => ['auth:sanctum', 'ability:admin'], 'prefix' => 'account', 'as' => 'account.'], static function () {
 //        Route::get('/user', [AccountController::class, 'show'])->name('user');
     });
 });

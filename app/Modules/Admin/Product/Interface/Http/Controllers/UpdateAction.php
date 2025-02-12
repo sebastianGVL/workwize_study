@@ -1,37 +1,35 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Modules\Admin\Product\Interface\Http\Controllers;
 
-use App\Modules\Admin\Product\Application\Data\StoreData;
-use App\Modules\Admin\Product\Domain\Http\Controllers\AbstractStoreAction;
-use App\Modules\Admin\Product\Domain\Http\Requests\AbstractStoreRequest;
-use App\Modules\Admin\Product\Domain\Services\AbstractStoreService;
+use App\Modules\Admin\Product\Application\Data\UpdateData;
+use App\Modules\Admin\Product\Domain\Http\Controllers\AbstractUpdateAction;
+use App\Modules\Admin\Product\Domain\Http\Requests\AbstractUpdateRequest;
+use App\Modules\Admin\Product\Domain\Services\AbstractUpdateService;
 use App\Modules\Common\Interface\Http\Data\BaseApiResponseData;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
-class StoreAction extends AbstractStoreAction
+class UpdateAction extends AbstractUpdateAction
 {
-    public function __invoke(AbstractStoreRequest $request, int $userId, AbstractStoreService $storeService): JsonResponse
+
+    public function __invoke(AbstractUpdateRequest $request, int $userId, int $productId, AbstractUpdateService $updateService): JsonResponse
     {
         try {
-            $product = $storeService->store(StoreData::fromRequest($request, $userId));
-        } catch (Throwable $e) {
+            $product = $updateService->update(UpdateData::fromRequest($request, $userId, $productId));
+        }catch (Throwable $e) {
             Log::error(
-                'StoreAction::__invoke failed: ' . $e->getMessage(),
+                'UpdateAction::__invoke failed: ' . $e->getMessage(),
                 ['product' => $request->toArray(), 'userId' => $userId]
             );
 
             return response()->json(
-                data: BaseApiResponseData::make(null, 'product not saved'),
+                data: BaseApiResponseData::make(null, 'product not updated'),
                 status: Response::HTTP_BAD_REQUEST
             );
         }
-
 
         return response()->json(
             data: BaseApiResponseData::make(
@@ -46,7 +44,7 @@ class StoreAction extends AbstractStoreAction
                 ],
                 'success'
             ),
-            status: Response::HTTP_CREATED
+            status: Response::HTTP_OK
         );
     }
 }

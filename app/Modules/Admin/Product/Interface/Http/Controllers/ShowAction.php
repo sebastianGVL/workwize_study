@@ -3,16 +3,16 @@
 namespace App\Modules\Admin\Product\Interface\Http\Controllers;
 
 use App\Modules\Admin\Product\Domain\Http\Controllers\AbstractShowAction;
-use App\Modules\Admin\Product\Domain\Http\Requests\AbstractShowRequest;
 use App\Modules\Admin\Product\Domain\Services\ShowServiceInterface;
-use App\Modules\Admin\User\Interface\Http\Data\BaseApiResponseData;
+use App\Modules\Common\Interface\Http\Data\BaseApiResponseData;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class ShowAction extends AbstractShowAction
 {
-    public function __invoke(AbstractShowRequest $request, int $userId, int $productId, ShowServiceInterface $storeService): JsonResponse
+    public function __invoke(Request $request, int $userId, int $productId, ShowServiceInterface $storeService): JsonResponse
     {
         try {
             $product = $storeService->show($productId);

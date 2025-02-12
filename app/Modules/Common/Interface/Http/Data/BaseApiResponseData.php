@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Modules\Admin\User\Interface\Http\Data;
+namespace App\Modules\Common\Interface\Http\Data;
 
-class BaseApiResponseData
+readonly class BaseApiResponseData
 {
     public function __construct(
-        public readonly ?array $data,
-        public readonly string $message,
+        public ?array $data,
+        public string $message,
     )
     {
 

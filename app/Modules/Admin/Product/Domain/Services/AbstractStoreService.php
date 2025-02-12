@@ -14,7 +14,7 @@ abstract class AbstractStoreService
         return $this->create($storeData);
     }
 
-    abstract protected function validate(StoreData $data);
+    abstract protected function validate(StoreData $data): void;
 
     abstract protected function create(StoreData $data): Product;
 }
