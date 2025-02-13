@@ -48,4 +48,13 @@ Structure:
 Tech Stack:
 - Laravel 11   
 - PHP 8.4 or PHP 8.3
-- MariaDB 11  
+- MariaDB 11
+
+What can be done better: 
+- Use JsonResource classes for returning in controllers instead of pure response()->json()   
+- Add proper role/permission management, i just added an ability to the token.   
+- Add PHPStan    
+- GitHub actions for the project to run the tests/ staticanalysis.     
+- Add wrapper for error handling to return always same type of errors ( Exceptions\Handler.php in previous laravel versions, inject there).
+- declare(strict_types=1) everywhere to be consistent.
+- more tests especially for cart and order, i added just 2-3.   
